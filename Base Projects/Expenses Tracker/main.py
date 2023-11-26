@@ -13,14 +13,15 @@ def create_transaction():
     date = input("Enter Transaction date(dd-mm-yyyy): ")
     description = input("Enter short description: ")
     transaction = Transaction(action_type, supplier, amount, date, description)
-    DbHandler.add_transaction(transaction)
+    DbHandler.add_transaction(transaction, override=True)
 
 
 def main_app():
-    action = int(input("Enter which operation to do: "))
+    action = int(input("Enter which operation to do: "))  # TODO: add options
     while action != -1:
         if action == 1:
             create_transaction()
+        action = int(input("Enter which operation to do: "))
 
 
 def init_app():
@@ -28,6 +29,7 @@ def init_app():
     DbHandler.create_table("Transactions",
                            ["Uid", "type", "supplier", "amount", "date", "description"],
                            ["text NOT NULL PRIMARY KEY", "text", "text", "real", "date", "text"])
+    print("Initialization completed!")
 
 
 
