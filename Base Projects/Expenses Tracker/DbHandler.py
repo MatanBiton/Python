@@ -35,8 +35,15 @@ def create_table(name, column_names, column_types):
     con.close()
 
 
-def add_transaction(transaction: Transaction):
+# TODO: check for multiple entries
+def add_transaction(transaction: Transaction, override = False):
     con = get_connection()
+    if override:
+        query = f"INSERT INTO Transactions VALUES ('{transaction.uid}', '{transaction.action_type}'," \
+                f" '{transaction.supplier}', '{transaction.amount}', '{transaction.date}', '{transaction.description}')"
+        con.cursor().execute(query)
+        con.commit()
+        con.close()
 
 
 
