@@ -36,14 +36,37 @@ def create_table(name, column_names, column_types):
 
 
 # TODO: check for multiple entries
-def add_transaction(transaction: Transaction, override = False):
+def add_transaction(transaction: Transaction, override=False):
     con = get_connection()
     if override:
         query = f"INSERT INTO Transactions VALUES ('{transaction.uid}', '{transaction.action_type}'," \
                 f" '{transaction.supplier}', '{transaction.amount}', '{transaction.date}', '{transaction.description}')"
-        con.cursor().execute(query)
-        con.commit()
+        try:
+            con.cursor().execute(query)
+            con.commit()
+        except sqlite3.Error:
+            con.close()
+            return False, "Operation failed!"
         con.close()
+        return True, "transaction added successfully!"
+    else:
+        con.close()
+        pass
+
+
+def get_all_transactions():
+    query = "SELECT * FROM Transactions"
+    con = get_connection()
+    cur = con.cursor()
+    cur.execute(query)
+    con.commit()
+    result = cur.fetchall()
+    cur.close()
+    con.close()
+    if result is None:
+        return False, "error"
+    else:
+        return True, [Transaction.init_from_list(lst) for lst in result]
 
 
 
